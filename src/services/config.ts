@@ -25,6 +25,9 @@ export const CONFIG_KEYS = {
   AUTO_UPDATE_CHECK_INTERVAL: 'autoUpdateCheckInterval',     // 检查间隔（秒）
   AUTO_UPDATE_MIN_INTERVAL: 'autoUpdateMinInterval',         // 最小更新间隔（毫秒）
   AUTO_UPDATE_DEBOUNCE_TIME: 'autoUpdateDebounceTime',       // 防抖时间（毫秒）
+  HTTP_API_ENABLED: 'httpApiEnabled',
+  HTTP_API_PORT: 'httpApiPort',
+  HTTP_API_TOKEN: 'httpApiToken',
   AUTH_ENABLED: 'authEnabled',
   AUTH_CREDENTIAL_ID: 'authCredentialId',
   AUTH_PASSWORD_HASH: 'authPasswordHash',
@@ -80,6 +83,42 @@ export async function getAutoUpdateDebounceTime(): Promise<number> {
 // 设置防抖时间（毫秒）
 export async function setAutoUpdateDebounceTime(ms: number): Promise<void> {
   await config.set(CONFIG_KEYS.AUTO_UPDATE_DEBOUNCE_TIME, Math.max(100, Math.min(5000, ms)))
+}
+
+// --- HTTP API 配置 ---
+
+// 获取是否启用 HTTP API
+export async function getHttpApiEnabled(): Promise<boolean> {
+  const value = await config.get(CONFIG_KEYS.HTTP_API_ENABLED)
+  return value !== undefined ? (value as boolean) : false
+}
+
+// 设置是否启用 HTTP API
+export async function setHttpApiEnabled(enabled: boolean): Promise<void> {
+  await config.set(CONFIG_KEYS.HTTP_API_ENABLED, enabled)
+}
+
+// 获取 HTTP API 端口
+export async function getHttpApiPort(): Promise<number> {
+  const value = await config.get(CONFIG_KEYS.HTTP_API_PORT)
+  return (value as number) || 5031
+}
+
+// 设置 HTTP API 端口
+export async function setHttpApiPort(port: number): Promise<void> {
+  const safePort = Number.isFinite(port) ? Math.max(1, Math.min(65535, Math.floor(port))) : 5031
+  await config.set(CONFIG_KEYS.HTTP_API_PORT, safePort)
+}
+
+// 获取 HTTP API 访问令牌
+export async function getHttpApiToken(): Promise<string> {
+  const value = await config.get(CONFIG_KEYS.HTTP_API_TOKEN)
+  return (value as string) || ''
+}
+
+// 设置 HTTP API 访问令牌
+export async function setHttpApiToken(token: string): Promise<void> {
+  await config.set(CONFIG_KEYS.HTTP_API_TOKEN, token.trim())
 }
 
 

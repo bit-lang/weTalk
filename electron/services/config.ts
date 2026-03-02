@@ -54,6 +54,11 @@ interface ConfigSchema {
   autoUpdateMinInterval: number       // 最小更新间隔（毫秒）
   autoUpdateDebounceTime: number      // 防抖时间（毫秒）
 
+  // HTTP API 相关
+  httpApiEnabled: boolean
+  httpApiPort: number
+  httpApiToken: string
+
   // AI 相关
   aiCurrentProvider: string  // 当前选中的提供商
   aiProviderConfigs: {  // 每个提供商的独立配置
@@ -99,6 +104,9 @@ const defaults: ConfigSchema = {
   autoUpdateCheckInterval: 60,     // 默认 60 秒检查一次
   autoUpdateMinInterval: 1000,     // 默认最小更新间隔 1 秒
   autoUpdateDebounceTime: 500,     // 默认防抖时间 0.5 秒
+  httpApiEnabled: false,
+  httpApiPort: 5031,
+  httpApiToken: '',
   // AI 默认配置
   aiCurrentProvider: 'zhipu',
   aiProviderConfigs: {},  // 空对象，用户配置后填充

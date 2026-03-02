@@ -2695,3 +2695,245 @@
     }
   }
 }
+
+.api-settings {
+  .api-status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .api-status-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 12px;
+  }
+
+  .api-status-label {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-bottom: 6px;
+  }
+
+  .api-status-value {
+    font-size: 15px;
+    color: var(--text-primary);
+    font-weight: 600;
+
+    &.ok {
+      color: #16a34a;
+    }
+
+    &.error {
+      color: #dc2626;
+    }
+
+    &.mono {
+      font-family: var(--font-mono);
+      font-size: 13px;
+    }
+  }
+
+  .api-endpoint-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .api-endpoint-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    border: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    border-radius: 10px;
+    padding: 10px 12px;
+  }
+
+  .api-endpoint-main {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+
+    code {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 2px 6px;
+      font-size: 12px;
+    }
+  }
+
+  .api-method {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 42px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #047857;
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+  }
+
+  .api-desc {
+    font-size: 12px;
+    color: var(--text-tertiary);
+  }
+}
+
+.input-inline-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 9999px;
+  background: var(--bg-primary);
+  padding: 0 6px 0 14px;
+  min-height: 40px;
+
+  &:focus-within {
+    border-color: var(--primary);
+  }
+
+  input {
+    flex: 1;
+    min-width: 0;
+    margin-bottom: 0;
+    border: none;
+    background: transparent;
+    padding: 8px 0;
+
+    &:focus {
+      border: none;
+    }
+  }
+
+  .inline-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    .inline-icon-btn {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      padding: 0;
+
+      &:hover {
+        color: var(--text-primary);
+      }
+
+      &:focus-visible {
+        outline: none;
+        color: var(--primary);
+      }
+    }
+  }
+}
+
+.switch-setting {
+  padding: 14px 16px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+
+  .switch-setting-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .switch-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .switch-desc {
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--text-tertiary);
+  }
+}
+
+.api-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .section-title {
+    margin: 0;
+  }
+}
+
+.api-doc-link-btn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+
+  &:hover {
+    color: var(--text-primary);
+  }
+
+  &:focus-visible {
+    outline: none;
+    color: var(--primary);
+  }
+}
+
+.api-switch {
+  width: 44px;
+  height: 26px;
+  border: none;
+  border-radius: 999px;
+  padding: 2px;
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.2s ease;
+  flex-shrink: 0;
+
+  &.off {
+    background: var(--border-color);
+  }
+
+  &.on {
+    background: var(--primary);
+  }
+
+  .api-switch-thumb {
+    display: block;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease;
+    transform: translateX(0);
+  }
+
+  &.on .api-switch-thumb {
+    transform: translateX(18px);
+  }
+}

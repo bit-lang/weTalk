@@ -71,6 +71,59 @@ export interface ElectronAPI {
     onDownloadProgress: (callback: (progress: number) => void) => () => void
     onUpdateAvailable: (callback: (info: { version: string; releaseNotes: string }) => void) => () => void
   }
+  httpApi: {
+    getStatus: () => Promise<{
+      success: boolean
+      status?: {
+        running: boolean
+        host: string
+        port: number
+        enabled: boolean
+        startedAt: string
+        uptimeMs: number
+        tokenConfigured: boolean
+        tokenPreview: string
+        baseUrl: string
+        endpoints: Array<{ method: string; path: string; desc: string }>
+        lastError: string
+      }
+      error?: string
+    }>
+    applySettings: (payload: { enabled: boolean; port: number; token: string }) => Promise<{
+      success: boolean
+      status?: {
+        running: boolean
+        host: string
+        port: number
+        enabled: boolean
+        startedAt: string
+        uptimeMs: number
+        tokenConfigured: boolean
+        tokenPreview: string
+        baseUrl: string
+        endpoints: Array<{ method: string; path: string; desc: string }>
+        lastError: string
+      }
+      error?: string
+    }>
+    restart: () => Promise<{
+      success: boolean
+      status?: {
+        running: boolean
+        host: string
+        port: number
+        enabled: boolean
+        startedAt: string
+        uptimeMs: number
+        tokenConfigured: boolean
+        tokenPreview: string
+        baseUrl: string
+        endpoints: Array<{ method: string; path: string; desc: string }>
+        lastError: string
+      }
+      error?: string
+    }>
+  }
   // Windows Hello 原生验证 (比 WebAuthn 更快)
   windowsHello: {
     /** 检查 Windows Hello 是否可用 */

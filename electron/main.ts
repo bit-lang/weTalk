@@ -25,6 +25,7 @@ import { voiceTranscribeService } from './services/voiceTranscribeService'
 import { voiceTranscribeServiceWhisper } from './services/voiceTranscribeServiceWhisper'
 import { windowsHelloService, WindowsHelloResult } from './services/windowsHelloService'
 import { shortcutService } from './services/shortcutService'
+import { httpApiService } from './services/httpApiService'
 
 // 注册自定义协议为特权协议（必须在 app ready 之前）
 protocol.registerSchemesAsPrivileged([
@@ -1054,6 +1055,42 @@ function registerIpcHandlers() {
 
   ipcMain.handle('config:setTldCache', async (_, tlds: string[]) => {
     return configService?.setTldCache(tlds)
+  })
+
+  // HTTP API 管理
+  ipcMain.handle('httpApi:getStatus', async () => {
+    return { success: true, status: httpApiService.getUiStatus() }
+  })
+
+  ipcMain.handle('httpApi:applySettings', async (_, payload: { enabled: boolean; port: number; token: string }) => {
+    try {
+      const enabled = Boolean(payload?.enabled)
+      const portRaw = Number(payload?.port)
+      const port = Number.isFinite(portRaw) ? Math.max(1, Math.min(65535, Math.floor(portRaw))) : 5031
+      const token = (payload?.token || '').trim()
+
+      configService?.set('httpApiEnabled', enabled)
+      configService?.set('httpApiPort', port)
+      configService?.set('httpApiToken', token)
+
+      httpApiService.applySettings({ enabled, port, token, host: '127.0.0.1' })
+      const restartResult = await httpApiService.restart()
+      if (!restartResult.success) {
+        return { success: false, error: restartResult.error || 'HTTP API 重启失败' }
+      }
+
+      return { success: true, status: httpApiService.getUiStatus() }
+    } catch (e) {
+      return { success: false, error: String(e) }
+    }
+  })
+
+  ipcMain.handle('httpApi:restart', async () => {
+    const result = await httpApiService.restart()
+    if (!result.success) {
+      return { success: false, error: result.error || 'HTTP API 重启失败' }
+    }
+    return { success: true, status: httpApiService.getUiStatus() }
   })
 
   // 数据库相关
@@ -3626,6 +3663,21 @@ app.whenReady().then(async () => {
   // 检查是否需要显示启动屏并连接数据库
   const shouldShowSplash = await checkAndConnectOnStartup()
 
+  // 启动本地 HTTP API（默认 127.0.0.1:5031）
+  const httpApiEnabled = configService?.get('httpApiEnabled') ?? false
+  const httpApiPort = configService?.get('httpApiPort') || 5031
+  const httpApiToken = (configService?.get('httpApiToken') || '').toString()
+  httpApiService.applySettings({
+    enabled: Boolean(httpApiEnabled),
+    host: '127.0.0.1',
+    port: Number(httpApiPort) || 5031,
+    token: httpApiToken
+  })
+  const httpApiStartResult = await httpApiService.start()
+  if (!httpApiStartResult.success) {
+    console.error('[HttpApi] 启动失败:', httpApiStartResult.error)
+  }
+
   // 只有在配置完整时才创建主窗口
   // 如果配置不完整，checkAndConnectOnStartup 会创建引导窗口
   if (shouldShowSplash !== false || configService?.get('myWxid')) {
@@ -3653,6 +3705,9 @@ app.on('window-all-closed', () => {
 })
 
 app.on('before-quit', () => {
+  httpApiService.stop().catch((e) => {
+    console.error('[HttpApi] 停止失败:', e)
+  })
   // 关闭配置数据库连接
   configService?.close()
 })
